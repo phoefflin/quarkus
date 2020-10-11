@@ -16,12 +16,13 @@
 ###
 FROM {dockerfile.native.from}
 WORKDIR /work/
-RUN chown 1001 /work \
+RUN adduser --uid 1001 -m -d /home/quarkus quarkus \
+    && chown quarkus /work \
     && chmod "g+rwX" /work \
-    && chown 1001:root /work
-COPY --chown=1001:root {buildtool.build-dir}/*-runner /work/application
+    && chown quarkus:root /work
+COPY --chown=quarkus:root {buildtool.build-dir}/*-runner /work/application
 
 EXPOSE 8080
-USER 1001
+USER quarkus
 
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
